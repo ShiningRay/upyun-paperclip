@@ -42,8 +42,9 @@ module Paperclip
           @queued_for_write.each do |style_name, file|
             current_path = ''
             relative_path = URI::encode path(style_name).gsub(@upyun_domain, '')
-
-            @resource[relative_path].post file, {'Expect' => '', 'Mkdir' => 'true'}
+						if File.exist?(file.path)
+            	@resource[relative_path].post File.read(file.path), {'Expect' => '', 'Mkdir' => 'true'}
+						end
           end
 
           after_flush_writes # allows attachment to clean up temp files
