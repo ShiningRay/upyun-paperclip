@@ -37,14 +37,12 @@ module Paperclip
           end
         end
 
-
         def flush_writes #:nodoc:
           @queued_for_write.each do |style_name, file|
             current_path = ''
             relative_path = URI::encode path(style_name).gsub(@upyun_domain, '')
-						if File.exist?(file.path)
-            	@resource[relative_path].post File.read(file.path), {'Expect' => '', 'Mkdir' => 'true'}
-						end
+            file = file.path if file.is_a?(String)
+						@resource[relative_path].post File.read(file), {'Expect' => '', 'Mkdir' => 'true'} if File.exist?(file)
           end
 
           after_flush_writes # allows attachment to clean up temp files
